@@ -16,23 +16,24 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 
 @RestController
-@RequestMapping("/api/v1/pdf/image-to-pdf")
+@RequestMapping("/api/v1/pdf")
 public class ImageToPdfController {
 
     private static final Logger log = LoggerFactory.getLogger(ImageToPdfController.class);
     private final ImageToPdfService imageToPdfService;
-    private final long MAX_FILE_SIZE = 10 * 1024 * 1024;
+    private final long MAX_FILE_SIZE = 15 * 1024 * 1024;
 
     @Autowired
     public ImageToPdfController(ImageToPdfService imageToPdfService) {
         this.imageToPdfService = imageToPdfService;
     }
 
-    @PostMapping("/convert")
+    @PostMapping("/images-to-pdf/convert")
     public ResponseEntity<byte[]> imagesToPdf(@RequestParam("images") MultipartFile[] images) {
         try {
-
+            log.info("Received {} images for conversion.", images.length);
             for (MultipartFile image : images) {
+                log.info("Received image: {} (size: {} bytes)", image.getOriginalFilename(), image.getSize());
                 if (image.getSize() > MAX_FILE_SIZE) {
                     return ResponseEntity.badRequest().body(
                             ("Image " + image.getOriginalFilename() + " exceeds the 10 MB limit.").getBytes()
@@ -50,7 +51,7 @@ public class ImageToPdfController {
             byte[] fileContent = new FileInputStream(pdfFile).readAllBytes();
 
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=images.pdf")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=images.pdf")
                     .contentType(MediaType.APPLICATION_PDF)
                     .body(fileContent);
 
