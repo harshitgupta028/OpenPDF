@@ -17,17 +17,18 @@ import java.io.*;
 
 @RestController
 @RequestMapping("/api/v1/pdf")
-public class ImageToPdfController {
+public class PdfConverterController {
 
-    private static final Logger log = LoggerFactory.getLogger(ImageToPdfController.class);
+    private static final Logger log = LoggerFactory.getLogger(PdfConverterController.class);
     private final ImageToPdfService imageToPdfService;
     private final long MAX_FILE_SIZE = 15 * 1024 * 1024;
 
     @Autowired
-    public ImageToPdfController(ImageToPdfService imageToPdfService) {
+    public PdfConverterController(ImageToPdfService imageToPdfService) {
         this.imageToPdfService = imageToPdfService;
     }
 
+    // Image to PDF
     @PostMapping("/images-to-pdf/convert")
     public ResponseEntity<byte[]> imagesToPdf(@RequestParam("images") MultipartFile[] images) {
         try {
@@ -62,4 +63,6 @@ public class ImageToPdfController {
         }
 
     }
+
+    // PDF to Images
 }

@@ -30,6 +30,7 @@ public class PdfPasswordController {
         this.pdfPasswordService = pdfPasswordService;
     }
 
+    // Unlock PDF
     @PostMapping("/unlock")
     public ResponseEntity<Resource> unlockPdf(
             @RequestParam("file") MultipartFile file,
@@ -51,6 +52,7 @@ public class PdfPasswordController {
         }
     }
 
+    // Lock PDF
     @PostMapping("/lock")
     public ResponseEntity<Resource> lockPdf(
             @RequestParam("file") MultipartFile file,
