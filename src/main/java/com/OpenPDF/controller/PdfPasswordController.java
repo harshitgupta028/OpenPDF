@@ -30,6 +30,7 @@ public class PdfPasswordController {
         this.pdfPasswordService = pdfPasswordService;
     }
 
+    // Unlock PDF
     @PostMapping("/unlock")
     public ResponseEntity<Resource> unlockPdf(
             @RequestParam("file") MultipartFile file,
@@ -38,22 +39,20 @@ public class PdfPasswordController {
         try {
             File unLockedFile = pdfPasswordService.unlockPdf(file.getInputStream(), password);
             Resource resource = new FileSystemResource(unLockedFile);
-            log.info("Successfully unlocked PDF: {}", file.getOriginalFilename());
 
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"unlocked.pdf\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"unlocked.pdf\"")
                     .contentType(MediaType.APPLICATION_PDF)
                     .body(resource);
 
         } catch (IOException e) {
-            log.error("Error processing file: {}", e.getMessage());
             return ResponseEntity.status(500).build();
         } catch (Exception ex) {
-            log.error("Error unlocking PDF {}: {}", file.getOriginalFilename(), ex.getMessage(), ex);
             return ResponseEntity.badRequest().body(null);
         }
     }
 
+    // Lock PDF
     @PostMapping("/lock")
     public ResponseEntity<Resource> lockPdf(
             @RequestParam("file") MultipartFile file,
@@ -71,7 +70,7 @@ public class PdfPasswordController {
             log.info("Successfully locked PDF: {}", file.getOriginalFilename());
 
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"locked.pdf\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"locked.pdf\"")
                     .contentType(MediaType.APPLICATION_PDF)
                     .body(resource);
 
